@@ -57,15 +57,24 @@ public class AppController {
                 profileController.viewProfile();
                 return true;
             case "2":
+                profileController.updateProfile(scanner);
+                return true;
+            case "3":
+                profileController.changePassword(scanner);
+                return true;
+            case "4":
+                profileController.managePreferences(scanner);
+                return true;
+            case "5":
                 SessionManager.getInstance().endSession();
                 System.out.println("Logged out successfully.");
                 return true;
-            case "3":
+            case "6":
                 SessionManager.getInstance().endSession();
                 System.out.println("MyContacts App closed.");
                 return false;
             default:
-                System.out.println("Invalid choice. Please enter 1, 2 or 3.");
+                System.out.println("Invalid choice. Please enter 1 to 6.");
                 return true;
         }
     }
@@ -84,8 +93,11 @@ public class AppController {
     private void printLoggedInMenu() {
         System.out.println();
         System.out.println("1. View Profile");
-        System.out.println("2. Logout");
-        System.out.println("3. Exit");
+        System.out.println("2. Update Profile");
+        System.out.println("3. Change Password");
+        System.out.println("4. Manage Preferences");
+        System.out.println("5. Logout");
+        System.out.println("6. Exit");
         System.out.print("Enter choice: ");
     }
 }

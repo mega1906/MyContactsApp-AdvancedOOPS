@@ -29,7 +29,7 @@ public class AuthenticationController {
 
         System.out.println();
         System.out.println("====================================");
-        System.out.println(" User Authentication - UC2");
+        System.out.println(" User Profile Management - UC3");
         System.out.println("====================================");
 
         while (continueLogin) {

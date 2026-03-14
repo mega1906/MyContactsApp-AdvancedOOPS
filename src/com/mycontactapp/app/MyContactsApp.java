@@ -3,10 +3,10 @@ package com.mycontactapp.app;
 import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 2 - User Authentication
+ * Use Case 3 - User Profile Management
  * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 2.0
+ * @version 3.0
  */
 public class MyContactsApp {
 
