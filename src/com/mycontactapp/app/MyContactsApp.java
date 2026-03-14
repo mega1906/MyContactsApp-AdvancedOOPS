@@ -1,17 +1,17 @@
 package com.mycontactapp.app;
 
-import com.mycontactapp.controller.RegistrationController;
+import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 1 - User Registration
- * Handles console input for creating a new user account.
+ * Use Case 2 - User Authentication
+ * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 1.0
+ * @version 2.0
  */
 public class MyContactsApp {
 
     public static void main(String[] args) {
-        RegistrationController registrationController = new RegistrationController();
-        registrationController.startRegistration();
+        AppController appController = new AppController();
+        appController.startApp();
     }
 }

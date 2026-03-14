@@ -7,14 +7,9 @@ import com.mycontactapp.model.User;
 import com.mycontactapp.util.InputValidator;
 import com.mycontactapp.util.PasswordUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class RegistrationService {
-
-    // List to store users data
-    private static final List<User> REGISTERED_USERS = new ArrayList<>();
 
     private final UserFactory userFactory;
 
@@ -37,7 +32,7 @@ public class RegistrationService {
                 .setCity(city);
 
         User user = userFactory.createUser(userType, userBuilder);
-        REGISTERED_USERS.add(user);
+        UserStore.addUser(user);
         return user;
     }
 
@@ -51,10 +46,8 @@ public class RegistrationService {
     }
 
     private void ensureEmailIsUnique(String email) throws ValidationException {
-        for (User user : REGISTERED_USERS) {
-            if (user.getEmail().equalsIgnoreCase(email)) {
-                throw new ValidationException("This email is already registered.");
-            }
+        if (UserStore.findUserByEmail(email).isPresent()) {
+            throw new ValidationException("This email is already registered.");
         }
     }
 

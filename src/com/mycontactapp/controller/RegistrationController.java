@@ -15,8 +15,7 @@ public class RegistrationController {
         this.registrationService = new RegistrationService();
     }
 
-    public void startRegistration() {
-        Scanner scanner = new Scanner(System.in);
+    public void startRegistration(Scanner scanner) {
         boolean continueRegistration = true;
 
         System.out.println("====================================");
@@ -53,7 +52,6 @@ public class RegistrationController {
         }
 
         System.out.println("Registration module closed.");
-        scanner.close();
     }
 
     private String readUserType(Scanner scanner) {
