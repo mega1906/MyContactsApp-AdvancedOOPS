@@ -15,6 +15,7 @@ public class TagCriteria implements SearchCriteria {
     @Override
     public boolean test(Contact contact) {
         return contact.getTags().stream()
+                .map(tag -> tag.getName())
                 .anyMatch(tag -> pattern.matcher(tag).find());
     }
 }

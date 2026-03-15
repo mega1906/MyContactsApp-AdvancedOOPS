@@ -5,12 +5,14 @@ import com.mycontactapp.exception.ValidationException;
 import com.mycontactapp.model.Contact;
 import com.mycontactapp.model.EmailAddress;
 import com.mycontactapp.model.PhoneNumber;
+import com.mycontactapp.model.Tag;
 import com.mycontactapp.model.User;
 import com.mycontactapp.service.BulkContactService;
 import com.mycontactapp.service.ContactService;
 import com.mycontactapp.service.AdvancedFilterService;
 import com.mycontactapp.service.SearchService;
 import com.mycontactapp.service.SessionManager;
+import com.mycontactapp.service.TagService;
 import com.mycontactapp.util.InputValidator;
 import com.mycontactapp.view.ContactView;
 
@@ -31,12 +33,14 @@ public class ContactController {
     private final BulkContactService bulkContactService;
     private final SearchService searchService;
     private final AdvancedFilterService advancedFilterService;
+    private final TagService tagService;
 
     public ContactController() {
         this.contactService = new ContactService();
         this.bulkContactService = new BulkContactService();
         this.searchService = new SearchService();
         this.advancedFilterService = new AdvancedFilterService();
+        this.tagService = new TagService();
     }
 
     public void createContact(Scanner scanner) {
@@ -381,6 +385,49 @@ public class ContactController {
         });
     }
 
+    public void manageTags(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+        boolean managing = true;
+
+        while (managing) {
+            printTagMenu();
+            String choice = scanner.nextLine().trim();
+
+            try {
+                switch (choice) {
+                    case "1":
+                        printAvailableTags(owner);
+                        break;
+                    case "2":
+                        System.out.print("Enter custom tag name: ");
+                        Tag createdTag = tagService.createCustomTag(owner, scanner.nextLine().trim());
+                        System.out.println("Tag created: " + createdTag.getName());
+                        break;
+                    case "3":
+                        assignTagToContact(scanner, owner);
+                        break;
+                    case "4":
+                        removeTagFromContact(scanner, owner);
+                        break;
+                    case "5":
+                        managing = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter 1 to 5.");
+                }
+            } catch (ValidationException exception) {
+                System.out.println("Tag operation failed: " + exception.getMessage());
+            }
+        }
+    }
+
     private String readContactType(Scanner scanner) {
         while (true) {
             System.out.println();
@@ -569,6 +616,61 @@ public class ContactController {
 
             System.out.println("Invalid choice. Please enter 1, 2 or 3.");
         }
+    }
+
+    private void printAvailableTags(User owner) {
+        List<Tag> availableTags = tagService.getAvailableTags(owner);
+
+        System.out.println();
+        System.out.println("Available Tags");
+        availableTags.stream()
+                .map(Tag::getName)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(System.out::println);
+    }
+
+    private void assignTagToContact(Scanner scanner, User owner) throws ValidationException {
+        showAvailableContactIds(owner);
+        System.out.print("Enter reference id: ");
+        String referenceId = scanner.nextLine().trim();
+        System.out.print("Enter tag name: ");
+        String tagName = scanner.nextLine().trim();
+        tagService.assignTagToContact(owner, referenceId, tagName);
+        System.out.println("Tag assigned successfully.");
+    }
+
+    private void removeTagFromContact(Scanner scanner, User owner) throws ValidationException {
+        showAvailableContactIds(owner);
+        System.out.print("Enter reference id: ");
+        String referenceId = scanner.nextLine().trim();
+        System.out.print("Enter tag name to remove: ");
+        String tagName = scanner.nextLine().trim();
+        tagService.removeTagFromContact(owner, referenceId, tagName);
+        System.out.println("Tag removed successfully.");
+    }
+
+    private void showAvailableContactIds(User owner) {
+        List<String> referenceList = contactService.getContactReferenceList(owner);
+
+        if (referenceList.isEmpty()) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Contact Ids");
+        referenceList.forEach(System.out::println);
+    }
+
+    private void printTagMenu() {
+        System.out.println();
+        System.out.println("Manage Tags");
+        System.out.println("1. View Available Tags");
+        System.out.println("2. Create Custom Tag");
+        System.out.println("3. Assign Tag To Contact");
+        System.out.println("4. Remove Tag From Contact");
+        System.out.println("5. Back");
+        System.out.print("Enter choice: ");
     }
 
     private String readBulkOperation(Scanner scanner) {

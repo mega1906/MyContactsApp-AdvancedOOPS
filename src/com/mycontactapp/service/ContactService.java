@@ -10,6 +10,7 @@ import com.mycontactapp.model.EmailAddress;
 import com.mycontactapp.model.OrganizationContact;
 import com.mycontactapp.model.PersonContact;
 import com.mycontactapp.model.PhoneNumber;
+import com.mycontactapp.model.Tag;
 import com.mycontactapp.model.User;
 import com.mycontactapp.observer.ContactCascadeObserver;
 import com.mycontactapp.observer.ContactDeletionObserver;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ContactService {
 
@@ -91,7 +93,7 @@ public class ContactService {
                 contact.getName(),
                 phoneNumbers,
                 emailAddresses,
-                contact.getTags(),
+                contact.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 contact.getCreatedAt().format(formatter),
@@ -144,11 +146,7 @@ public class ContactService {
         return ContactHistoryManager.redo(owner.getUserId()).isPresent();
     }
 
-    public Contact addTagToContact(User owner, String referenceId, String tag) throws ValidationException {
-        if (tag == null || tag.isBlank()) {
-            throw new ValidationException("Tag cannot be empty.");
-        }
-
+    public Contact addTagToContact(User owner, String referenceId, Tag tag) throws ValidationException {
         Optional<Contact> contactOptional = findContact(owner, referenceId);
 
         if (contactOptional.isEmpty()) {
@@ -243,6 +241,10 @@ public class ContactService {
         }
 
         throw new ValidationException("Invalid field selected.");
+    }
+
+    public Contact copyForUpdate(Contact contact) {
+        return copyContact(contact);
     }
 
     private Contact copyContact(Contact contact) {

@@ -1,6 +1,7 @@
 package com.mycontactapp.service;
 
 import com.mycontactapp.model.Contact;
+import com.mycontactapp.model.Tag;
 import com.mycontactapp.model.User;
 import com.mycontactapp.search.AndCriteria;
 import com.mycontactapp.search.CriteriaFilterHandler;
@@ -16,6 +17,7 @@ import com.mycontactapp.view.ContactView;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchService {
 
@@ -73,7 +75,7 @@ public class SearchService {
                 contact.getName(),
                 contact.getPhoneNumbers().stream().map(phone -> phone.getValue()).toList(),
                 contact.getEmailAddresses().stream().map(mail -> mail.getValue()).toList(),
-                contact.getTags(),
+                contact.getTags().stream().map(Tag::getName).collect(Collectors.toList()),
                 java.util.Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 java.util.Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 contact.getCreatedAt().format(formatter),

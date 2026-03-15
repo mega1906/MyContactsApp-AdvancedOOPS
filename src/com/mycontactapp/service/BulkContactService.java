@@ -5,7 +5,9 @@ import com.mycontactapp.composite.ContactGroupComponent;
 import com.mycontactapp.composite.SingleContactComponent;
 import com.mycontactapp.exception.ValidationException;
 import com.mycontactapp.model.Contact;
+import com.mycontactapp.model.Tag;
 import com.mycontactapp.model.User;
+import com.mycontactapp.service.TagService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 public class BulkContactService {
 
     private final ContactService contactService;
+    private final TagService tagService;
 
     public BulkContactService() {
         this.contactService = new ContactService();
+        this.tagService = new TagService();
     }
 
     public ContactComponent buildSelection(User owner, List<String> referenceIds) throws ValidationException {
@@ -60,7 +64,8 @@ public class BulkContactService {
         List<Contact> contacts = contactComponent.getContacts();
 
         for (Contact contact : contacts) {
-            contactService.addTagToContact(owner, contact.getReferenceId(), tag);
+            Tag sharedTag = tagService.createCustomTag(owner, tag);
+            contactService.addTagToContact(owner, contact.getReferenceId(), sharedTag);
         }
 
         return contacts.size();
@@ -74,7 +79,9 @@ public class BulkContactService {
                         contact.getName(),
                         contact.getPhoneNumbers().stream().map(phone -> phone.getValue()).collect(Collectors.joining(", ")),
                         contact.getEmailAddresses().stream().map(email -> email.getValue()).collect(Collectors.joining(", ")),
-                        contact.getTags().isEmpty() ? "-" : String.join(", ", contact.getTags())
+                        contact.getTags().isEmpty() ? "-" : contact.getTags().stream()
+                                .map(Tag::getName)
+                                .collect(Collectors.joining(", "))
                 ))
                 .collect(Collectors.toList());
 

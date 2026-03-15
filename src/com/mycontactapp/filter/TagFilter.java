@@ -17,6 +17,7 @@ public class TagFilter implements ContactFilter {
     public List<Contact> apply(List<Contact> contacts) {
         return contacts.stream()
                 .filter(contact -> contact.getTags().stream()
+                        .map(existingTag -> existingTag.getName())
                         .anyMatch(existingTag -> existingTag.equalsIgnoreCase(tag)))
                 .collect(Collectors.toList());
     }

@@ -3,10 +3,10 @@ package com.mycontactapp.app;
 import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 10 - Advanced Filtering
+ * Use Case 11 - Create and Manage Tags
  * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 10.0
+ * @version 11.0
  */
 public class MyContactsApp {
 

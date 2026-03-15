@@ -5,7 +5,9 @@ import com.mycontactapp.util.InputValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class Contact {
 
@@ -17,7 +19,7 @@ public abstract class Contact {
     private List<EmailAddress> emailAddresses;
     private String address;
     private String notes;
-    private List<String> tags;
+    private Set<Tag> tags;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private int contactFrequency;
@@ -43,7 +45,7 @@ public abstract class Contact {
         this.emailAddresses = copyEmailAddresses(emailAddresses);
         this.address = address;
         this.notes = notes;
-        this.tags = new ArrayList<>();
+        this.tags = new HashSet<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.contactFrequency = 0;
@@ -83,8 +85,8 @@ public abstract class Contact {
         return notes;
     }
 
-    public List<String> getTags() {
-        return new ArrayList<>(tags);
+    public Set<Tag> getTags() {
+        return new HashSet<>(tags);
     }
 
     public LocalDateTime getCreatedAt() {
@@ -136,13 +138,19 @@ public abstract class Contact {
         this.notes = notes;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = new ArrayList<>(tags);
+    public void setTags(Set<Tag> tags) {
+        this.tags = new HashSet<>(tags);
     }
 
-    public void addTag(String tag) {
-        if (tag != null && !tag.isBlank() && tags.stream().noneMatch(existing -> existing.equalsIgnoreCase(tag))) {
-            tags.add(tag.trim());
+    public void addTag(Tag tag) {
+        if (tag != null) {
+            tags.add(tag);
+        }
+    }
+
+    public void removeTag(Tag tag) {
+        if (tag != null) {
+            tags.remove(tag);
         }
     }
 

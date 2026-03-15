@@ -1,15 +1,14 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 10 - Advanced Filtering
+### Use Case 11 - Create and Manage Tags
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to apply multiple filters like tag, date added and frequently contacted, then sort the result.
+This use case allows a logged-in user to create custom tags and manage tag assignment for contacts.
 
 #### Design Patterns
 
-- Composite Pattern for combining filters
-- Strategy Pattern for different sorting algorithms
+- Flyweight Pattern for sharing tag instances
 
 #### WorkFlow Example
 
@@ -27,35 +26,23 @@ This use case allows a logged-in user to apply multiple filters like tag, date a
 11. Bulk Operations
 12. Search Contacts
 13. Advanced Filtering
-14. Logout
-15. Exit
-Enter choice: 13
+14. Manage Tags
+15. Logout
+16. Exit
+Enter choice: 14
 
-Advanced Filtering
-Enter tag to filter (leave blank to skip): TeamA
-Enter date added in yyyy-MM-dd (leave blank to skip):
-Enter minimum frequency count (leave blank to skip): 1
-
-Select sort option:
-1. Name
-2. Date Added
-3. Frequently Contacted
-Enter choice: 3
-```
+Manage Tags
+1. View Available Tags
+2. Create Custom Tag
+3. Assign Tag To Contact
+4. Remove Tag From Contact
+5. Back
+Enter choice: 2
+Enter custom tag name: Neighbours
+```s
 
 Output
 
 ```text
-Filtered Contacts
-Reference Id : MEG1
-Contact Type : Person Contact
-Name         : Teena
-Phones       : 9876543210
-Emails       : teena@gmail.com
-Tags         : TeamA
-Address      : Chennai
-Notes        : Friend
-Created At   : 2025-01-01 10:00:00
-Updated At   : 2025-01-01 10:00:00
-Frequency    : 2
+Tag created: Neighbousrs
 ```
