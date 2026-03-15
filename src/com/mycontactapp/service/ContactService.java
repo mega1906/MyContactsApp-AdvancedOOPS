@@ -1,10 +1,14 @@
 package com.mycontactapp.service;
 
 import com.mycontactapp.builder.ContactBuilder;
+import com.mycontactapp.command.ContactEditCommand;
+import com.mycontactapp.command.EditContactCommand;
 import com.mycontactapp.exception.ValidationException;
 import com.mycontactapp.factory.ContactFactory;
 import com.mycontactapp.model.Contact;
 import com.mycontactapp.model.EmailAddress;
+import com.mycontactapp.model.OrganizationContact;
+import com.mycontactapp.model.PersonContact;
 import com.mycontactapp.model.PhoneNumber;
 import com.mycontactapp.model.User;
 import com.mycontactapp.util.InputValidator;
@@ -94,6 +98,39 @@ public class ContactService {
         return referenceList;
     }
 
+    public Optional<Contact> findContact(User owner, String referenceId) {
+        return ContactStore.findContactByReferenceId(owner.getUserId(), referenceId);
+    }
+
+    public Contact editContact(User owner, String referenceId, String fieldName, String value,
+                               List<PhoneNumber> phoneNumbers, List<EmailAddress> emailAddresses)
+            throws ValidationException {
+        Optional<Contact> contactOptional = findContact(owner, referenceId);
+
+        if (contactOptional.isEmpty()) {
+            throw new ValidationException("Contact not found.");
+        }
+
+        Contact originalContact = contactOptional.get();
+        Contact modifiedContact = copyContact(originalContact);
+
+        applyEdit(modifiedContact, fieldName, value, phoneNumbers, emailAddresses);
+        modifiedContact.setUpdatedAt(LocalDateTime.now());
+
+        ContactEditCommand command = new EditContactCommand(copyContact(originalContact), modifiedContact);
+        command.execute();
+        ContactHistoryManager.record(owner.getUserId(), command);
+        return modifiedContact;
+    }
+
+    public boolean undoLastEdit(User owner) {
+        return ContactHistoryManager.undo(owner.getUserId()).isPresent();
+    }
+
+    public boolean redoLastEdit(User owner) {
+        return ContactHistoryManager.redo(owner.getUserId()).isPresent();
+    }
+
     private void validateContactData(String name, List<PhoneNumber> phoneNumbers,
                                      List<EmailAddress> emailAddresses) throws ValidationException {
         InputValidator.validateName(name);
@@ -118,5 +155,44 @@ public class ContactService {
 
         int nextNumber = ContactStore.getContactCountByOwner(owner.getUserId()) + 1;
         return cleanedName + nextNumber;
+    }
+
+    private void applyEdit(Contact contact, String fieldName, String value, List<PhoneNumber> phoneNumbers,
+                           List<EmailAddress> emailAddresses) throws ValidationException {
+        if ("NAME".equalsIgnoreCase(fieldName)) {
+            contact.setName(value);
+            return;
+        }
+
+        if ("PHONES".equalsIgnoreCase(fieldName)) {
+            contact.setPhoneNumbers(phoneNumbers);
+            return;
+        }
+
+        if ("EMAILS".equalsIgnoreCase(fieldName)) {
+            contact.setEmailAddresses(emailAddresses);
+            return;
+        }
+
+        if ("ADDRESS".equalsIgnoreCase(fieldName)) {
+            contact.setAddress(value);
+            return;
+        }
+
+        if ("NOTES".equalsIgnoreCase(fieldName)) {
+            contact.setNotes(value);
+            return;
+        }
+
+        throw new ValidationException("Invalid field selected.");
+    }
+
+    private Contact copyContact(Contact contact) {
+        // Copy constructor keeps edit operations isolated from stored state.
+        if (contact instanceof PersonContact) {
+            return new PersonContact((PersonContact) contact);
+        }
+
+        return new OrganizationContact((OrganizationContact) contact);
     }
 }

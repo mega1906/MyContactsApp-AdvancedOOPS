@@ -3,10 +3,10 @@ package com.mycontactapp.app;
 import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 5 - View Contact Details
+ * Use Case 6 - Edit Contact
  * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 5.0
+ * @version 6.0
  */
 public class MyContactsApp {
 

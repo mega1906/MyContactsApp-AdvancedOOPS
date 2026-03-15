@@ -51,4 +51,15 @@ public class ContactStore {
 
         return ownerContacts;
     }
+
+    public static void replaceContact(Contact updatedContact) {
+        for (int index = 0; index < CONTACTS.size(); index++) {
+            Contact existingContact = CONTACTS.get(index);
+
+            if (existingContact.getContactId().equals(updatedContact.getContactId())) {
+                CONTACTS.set(index, updatedContact);
+                return;
+            }
+        }
+    }
 }

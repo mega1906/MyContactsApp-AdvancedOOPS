@@ -1,6 +1,10 @@
 package com.mycontactapp.model;
 
+import com.mycontactapp.exception.ValidationException;
+import com.mycontactapp.util.InputValidator;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Contact {
@@ -8,13 +12,13 @@ public abstract class Contact {
     private final String contactId;
     private final String referenceId;
     private final String ownerUserId;
-    private final String name;
-    private final List<PhoneNumber> phoneNumbers;
-    private final List<EmailAddress> emailAddresses;
-    private final String address;
-    private final String notes;
+    private String name;
+    private List<PhoneNumber> phoneNumbers;
+    private List<EmailAddress> emailAddresses;
+    private String address;
+    private String notes;
     private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     protected Contact(String contactId, String referenceId, String ownerUserId, String name,
                       List<PhoneNumber> phoneNumbers, List<EmailAddress> emailAddresses,
@@ -23,8 +27,8 @@ public abstract class Contact {
         this.referenceId = referenceId;
         this.ownerUserId = ownerUserId;
         this.name = name;
-        this.phoneNumbers = phoneNumbers;
-        this.emailAddresses = emailAddresses;
+        this.phoneNumbers = copyPhoneNumbers(phoneNumbers);
+        this.emailAddresses = copyEmailAddresses(emailAddresses);
         this.address = address;
         this.notes = notes;
         this.createdAt = createdAt;
@@ -48,11 +52,11 @@ public abstract class Contact {
     }
 
     public List<PhoneNumber> getPhoneNumbers() {
-        return phoneNumbers;
+        return copyPhoneNumbers(phoneNumbers);
     }
 
     public List<EmailAddress> getEmailAddresses() {
-        return emailAddresses;
+        return copyEmailAddresses(emailAddresses);
     }
 
     public String getAddress() {
@@ -69,6 +73,67 @@ public abstract class Contact {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setName(String name) throws ValidationException {
+        InputValidator.validateName(name);
+        this.name = name;
+    }
+
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) throws ValidationException {
+        if (phoneNumbers == null || phoneNumbers.isEmpty()) {
+            throw new ValidationException("At least one phone number is required.");
+        }
+
+        this.phoneNumbers = copyPhoneNumbers(phoneNumbers);
+    }
+
+    public void setEmailAddresses(List<EmailAddress> emailAddresses) throws ValidationException {
+        if (emailAddresses == null || emailAddresses.isEmpty()) {
+            throw new ValidationException("At least one email address is required.");
+        }
+
+        this.emailAddresses = copyEmailAddresses(emailAddresses);
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    private List<PhoneNumber> copyPhoneNumbers(List<PhoneNumber> source) {
+        List<PhoneNumber> copiedPhoneNumbers = new ArrayList<>();
+
+        if (source == null) {
+            return copiedPhoneNumbers;
+        }
+
+        for (PhoneNumber phoneNumber : source) {
+            copiedPhoneNumbers.add(phoneNumber.copy());
+        }
+
+        return copiedPhoneNumbers;
+    }
+
+    private List<EmailAddress> copyEmailAddresses(List<EmailAddress> source) {
+        List<EmailAddress> copiedEmailAddresses = new ArrayList<>();
+
+        if (source == null) {
+            return copiedEmailAddresses;
+        }
+
+        for (EmailAddress emailAddress : source) {
+            copiedEmailAddresses.add(emailAddress.copy());
+        }
+
+        return copiedEmailAddresses;
     }
 
     public abstract String getContactType();

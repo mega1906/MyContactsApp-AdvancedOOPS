@@ -96,6 +96,106 @@ public class ContactController {
         System.out.println(contactViewOptional.get());
     }
 
+    public void editContact(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+        List<String> referenceList = contactService.getContactReferenceList(owner);
+
+        if (referenceList.isEmpty()) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Contact Ids");
+
+        for (String referenceItem : referenceList) {
+            System.out.println(referenceItem);
+        }
+
+        System.out.print("Enter reference id: ");
+        String referenceId = scanner.nextLine().trim();
+        boolean editing = true;
+
+        while (editing) {
+            printEditContactMenu();
+            String choice = scanner.nextLine().trim();
+
+            try {
+                switch (choice) {
+                    case "1":
+                        contactService.editContact(owner, referenceId, "NAME", readValidContactName(scanner), null, null);
+                        System.out.println("Contact name updated successfully.");
+                        break;
+                    case "2":
+                        contactService.editContact(owner, referenceId, "PHONES", null, readPhoneNumbers(scanner), null);
+                        System.out.println("Contact phone numbers updated successfully.");
+                        break;
+                    case "3":
+                        contactService.editContact(owner, referenceId, "EMAILS", null, null, readEmailAddresses(scanner));
+                        System.out.println("Contact email addresses updated successfully.");
+                        break;
+                    case "4":
+                        contactService.editContact(owner, referenceId, "ADDRESS",
+                                readOptionalValue(scanner, "Enter address (optional): "), null, null);
+                        System.out.println("Contact address updated successfully.");
+                        break;
+                    case "5":
+                        contactService.editContact(owner, referenceId, "NOTES",
+                                readOptionalValue(scanner, "Enter notes (optional): "), null, null);
+                        System.out.println("Contact notes updated successfully.");
+                        break;
+                    case "6":
+                        editing = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter 1 to 6.");
+                }
+            } catch (ValidationException exception) {
+                System.out.println("Contact edit failed: " + exception.getMessage());
+                if ("Contact not found.".equals(exception.getMessage())) {
+                    editing = false;
+                }
+            }
+        }
+    }
+
+    public void undoLastEdit() {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        if (contactService.undoLastEdit(userOptional.get())) {
+            System.out.println("Last contact edit undone successfully.");
+        } else {
+            System.out.println("No contact edit available to undo.");
+        }
+    }
+
+    public void redoLastEdit() {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        if (contactService.redoLastEdit(userOptional.get())) {
+            System.out.println("Last contact edit redone successfully.");
+        } else {
+            System.out.println("No contact edit available to redo.");
+        }
+    }
+
     private String readContactType(Scanner scanner) {
         while (true) {
             System.out.println();
@@ -201,6 +301,18 @@ public class ContactController {
     private String readOptionalValue(Scanner scanner, String message) {
         System.out.print(message);
         return scanner.nextLine().trim();
+    }
+
+    private void printEditContactMenu() {
+        System.out.println();
+        System.out.println("What do you want to edit?");
+        System.out.println("1. Name");
+        System.out.println("2. Phone Numbers");
+        System.out.println("3. Email Addresses");
+        System.out.println("4. Address");
+        System.out.println("5. Notes");
+        System.out.println("6. Back");
+        System.out.print("Enter choice: ");
     }
 
     private void printSuccessMessage(Contact contact) {

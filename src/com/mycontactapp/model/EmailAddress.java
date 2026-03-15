@@ -15,4 +15,12 @@ public class EmailAddress {
     public String getValue() {
         return value;
     }
+
+    public EmailAddress copy() {
+        try {
+            return new EmailAddress(value);
+        } catch (ValidationException exception) {
+            throw new IllegalStateException("Invalid stored email address.", exception);
+        }
+    }
 }

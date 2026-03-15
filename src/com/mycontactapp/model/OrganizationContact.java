@@ -11,6 +11,21 @@ public class OrganizationContact extends Contact {
         super(contactId, referenceId, ownerUserId, name, phoneNumbers, emailAddresses, address, notes, createdAt, updatedAt);
     }
 
+    public OrganizationContact(OrganizationContact other) {
+        this(
+                other.getContactId(),
+                other.getReferenceId(),
+                other.getOwnerUserId(),
+                other.getName(),
+                other.getPhoneNumbers(),
+                other.getEmailAddresses(),
+                other.getAddress(),
+                other.getNotes(),
+                other.getCreatedAt(),
+                other.getUpdatedAt()
+        );
+    }
+
     @Override
     public String getContactType() {
         return "Organization Contact";

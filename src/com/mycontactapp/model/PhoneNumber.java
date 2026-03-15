@@ -15,4 +15,12 @@ public class PhoneNumber {
     public String getValue() {
         return value;
     }
+
+    public PhoneNumber copy() {
+        try {
+            return new PhoneNumber(value);
+        } catch (ValidationException exception) {
+            throw new IllegalStateException("Invalid stored phone number.", exception);
+        }
+    }
 }
