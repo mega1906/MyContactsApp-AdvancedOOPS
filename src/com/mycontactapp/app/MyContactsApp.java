@@ -3,10 +3,10 @@ package com.mycontactapp.app;
 import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 8 - Bulk Operations
+ * Use Case 9 - Search Contacts
  * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 8.0
+ * @version 9.0
  */
 public class MyContactsApp {
 

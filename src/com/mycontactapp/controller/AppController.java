@@ -89,15 +89,18 @@ public class AppController {
                 contactController.bulkOperations(scanner);
                 return true;
             case "12":
+                contactController.searchContacts(scanner);
+                return true;
+            case "13":
                 SessionManager.getInstance().endSession();
                 System.out.println("Logged out successfully.");
                 return true;
-            case "13":
+            case "14":
                 SessionManager.getInstance().endSession();
                 System.out.println("MyContacts App closed.");
                 return false;
             default:
-                System.out.println("Invalid choice. Please enter 1 to 13.");
+                System.out.println("Invalid choice. Please enter 1 to 14.");
                 return true;
         }
     }
@@ -126,8 +129,9 @@ public class AppController {
         System.out.println("9. Redo Last Contact Edit");
         System.out.println("10. Delete Contact");
         System.out.println("11. Bulk Operations");
-        System.out.println("12. Logout");
-        System.out.println("13. Exit");
+        System.out.println("12. Search Contacts");
+        System.out.println("13. Logout");
+        System.out.println("14. Exit");
         System.out.print("Enter choice: ");
     }
 }

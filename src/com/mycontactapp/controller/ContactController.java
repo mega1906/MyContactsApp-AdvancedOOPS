@@ -8,6 +8,7 @@ import com.mycontactapp.model.PhoneNumber;
 import com.mycontactapp.model.User;
 import com.mycontactapp.service.BulkContactService;
 import com.mycontactapp.service.ContactService;
+import com.mycontactapp.service.SearchService;
 import com.mycontactapp.service.SessionManager;
 import com.mycontactapp.util.InputValidator;
 import com.mycontactapp.view.ContactView;
@@ -26,10 +27,12 @@ public class ContactController {
 
     private final ContactService contactService;
     private final BulkContactService bulkContactService;
+    private final SearchService searchService;
 
     public ContactController() {
         this.contactService = new ContactService();
         this.bulkContactService = new BulkContactService();
+        this.searchService = new SearchService();
     }
 
     public void createContact(Scanner scanner) {
@@ -297,6 +300,42 @@ public class ContactController {
         } catch (IOException exception) {
             System.out.println("Export failed: " + exception.getMessage());
         }
+    }
+
+    public void searchContacts(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+
+        System.out.println();
+        System.out.println("Search Contacts");
+        System.out.print("Enter name to search (leave blank to skip): ");
+        String name = scanner.nextLine().trim();
+        System.out.print("Enter phone to search (leave blank to skip): ");
+        String phone = scanner.nextLine().trim();
+        System.out.print("Enter email to search (leave blank to skip): ");
+        String email = scanner.nextLine().trim();
+        System.out.print("Enter tag to search (leave blank to skip): ");
+        String tag = scanner.nextLine().trim();
+
+        List<ContactView> results = searchService.searchContacts(owner, name, phone, email, tag);
+
+        if (results.isEmpty()) {
+            System.out.println("No matching contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Search Results");
+        results.forEach(contactView -> {
+            System.out.println(contactView);
+            System.out.println();
+        });
     }
 
     private String readContactType(Scanner scanner) {

@@ -1,14 +1,15 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 8 - Bulk Operations
+### Use Case 9 - Search Contacts
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to perform delete, tag and export operations on multiple contacts at once.
+This use case allows a logged-in user to search contacts by name, phone, email and tags.
 
 #### Design Patterns
 
-- Composite Pattern for treating one or many selected contacts the same way
+- Specification Pattern for building search criteria
+- Chain of Responsibility for the search filter pipeline
 
 #### WorkFlow Example
 
@@ -24,25 +25,30 @@ This use case allows a logged-in user to perform delete, tag and export operatio
 9. Redo Last Contact Edit
 10. Delete Contact
 11. Bulk Operations
-12. Logout
-13. Exit
-Enter choice: 11
+12. Search Contacts
+13. Logout
+14. Exit
+Enter choice: 12
 
-Available Contact Ids
-MEG1 - Teena
-MEG2 - Tulsee
-Enter reference ids separated by comma or ALL: MEG1, MEG2
-
-Select bulk operation:
-1. Bulk Delete
-2. Bulk Tag
-3. Bulk Export
-Enter choice: 2
-Enter tag: TeamA
+Search Contacts
+Enter name to search (leave blank to skip): teena
+Enter phone to search (leave blank to skip):
+Enter email to search (leave blank to skip):
+Enter tag to search (leave blank to skip): teama
 ```
 
 Output
 
 ```text
-Tag added to 2 contact(s).
+Search Results
+Reference Id : MEG1
+Contact Type : Person Contact
+Name         : Teena
+Phones       : 9876543210
+Emails       : teena@gmail.com
+Tags         : TeamA
+Address      : Chennai
+Notes        : Friend
+Created At   : 2025-01-01 10:00:00
+Updated At   : 2025-01-01 10:00:00
 ```
