@@ -71,15 +71,18 @@ public class AppController {
                 contactController.createContact(scanner);
                 return true;
             case "6":
+                contactController.viewContactDetails(scanner);
+                return true;
+            case "7":
                 SessionManager.getInstance().endSession();
                 System.out.println("Logged out successfully.");
                 return true;
-            case "7":
+            case "8":
                 SessionManager.getInstance().endSession();
                 System.out.println("MyContacts App closed.");
                 return false;
             default:
-                System.out.println("Invalid choice. Please enter 1 to 7.");
+                System.out.println("Invalid choice. Please enter 1 to 8.");
                 return true;
         }
     }
@@ -102,8 +105,9 @@ public class AppController {
         System.out.println("3. Change Password");
         System.out.println("4. Manage Preferences");
         System.out.println("5. Create Contact");
-        System.out.println("6. Logout");
-        System.out.println("7. Exit");
+        System.out.println("6. View Contact Details");
+        System.out.println("7. Logout");
+        System.out.println("8. Exit");
         System.out.print("Enter choice: ");
     }
 }

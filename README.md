@@ -1,15 +1,14 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 4 - Create Contact
+### Use Case 5 - View Contact Details
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to create a new contact with multiple phone numbers, multiple email addresses and optional fields.
+This use case allows a logged-in user to view full details of a specific contact.
 
 #### Design Patterns
 
-- Builder Pattern for contact construction
-- Factory Pattern for creating contact types
+- Decorator Pattern for contact display formatting
 
 #### WorkFlow Example
 
@@ -19,36 +18,29 @@ This use case allows a logged-in user to create a new contact with multiple phon
 3. Change Password
 4. Manage Preferences
 5. Create Contact
-6. Logout
-7. Exit
-Enter choice: 5
+6. View Contact Details
+7. Logout
+8. Exit
+Enter choice: 6
 
-Select contact type:
-1. Person Contact
-2. Organization Contact
-Enter choice: 1
-Enter contact name: Teena
-Enter phone number: 9876543210
-Do you want to add another phone number? (yes/no): yes
-Enter phone number: 9123456780
-Do you want to add another phone number? (yes/no): no
-Enter email address: teena@gmail.com
-Do you want to add another email address? (yes/no): no
-Enter address (optional): 
-Enter notes (optional): College friend
+Available Contact Ids
+MEG1 - Teena
+MEG2 - Tulsee
+
+Enter reference id: MEG1
 ```
 
 Output
 
 ```text
-Contact created successfully.
-Contact Type : Person Contact
+Contact Details
 Reference Id : MEG1
-Contact Id   : 63a966d0-3b62-42af-881b-6bec4d39677a
+Contact Type : Person Contact
 Name         : Teena
 Phones       : 9876543210, 9123456780
 Emails       : teena@gmail.com
 Address      : Chennai
-Notes        : College friend
+Notes        : College Friend
 Created At   : 2025-01-01 10:00:00
+Updated At   : 2025-01-01 10:00:00
 ```

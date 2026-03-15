@@ -8,6 +8,7 @@ import com.mycontactapp.model.User;
 import com.mycontactapp.service.ContactService;
 import com.mycontactapp.service.SessionManager;
 import com.mycontactapp.util.InputValidator;
+import com.mycontactapp.view.ContactView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,6 +56,44 @@ public class ContactController {
         } catch (ValidationException exception) {
             System.out.println("Contact creation failed: " + exception.getMessage());
         }
+    }
+
+    public void viewContactDetails(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+        List<String> referenceList = contactService.getContactReferenceList(owner);
+
+        if (referenceList.isEmpty()) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Contact Ids");
+
+        for (String referenceItem : referenceList) {
+            System.out.println(referenceItem);
+        }
+
+        System.out.print("Enter reference id: ");
+        String referenceId = scanner.nextLine().trim();
+
+        Optional<ContactView> contactViewOptional = contactService.getContactView(owner, referenceId);
+
+        if (contactViewOptional.isEmpty()) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Contact Details");
+        System.out.println(contactViewOptional.get());
     }
 
     private String readContactType(Scanner scanner) {
