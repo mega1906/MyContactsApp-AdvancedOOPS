@@ -26,7 +26,7 @@ public class PersonContact extends Contact {
                 other.isDeleted(),
                 other.getDeletedAt()
         );
-        setTags(other.getTags());
+        setTagAssignments(other.getTagAssignments());
         setContactFrequency(other.getContactFrequency());
     }
 

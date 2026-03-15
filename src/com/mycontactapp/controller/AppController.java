@@ -137,7 +137,7 @@ public class AppController {
         System.out.println("11. Bulk Operations");
         System.out.println("12. Search Contacts");
         System.out.println("13. Advanced Filtering");
-        System.out.println("14. Manage Tags");
+        System.out.println("14. Apply Tags To Contacts");
         System.out.println("15. Logout");
         System.out.println("16. Exit");
         System.out.print("Enter choice: ");

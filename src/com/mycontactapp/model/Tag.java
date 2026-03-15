@@ -2,12 +2,15 @@ package com.mycontactapp.model;
 
 import com.mycontactapp.exception.ValidationException;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class Tag {
 
     private final String name;
+    private final Set<ContactTagAssignment> assignments;
 
     public Tag(String name) throws ValidationException {
         if (name == null || name.isBlank()) {
@@ -21,10 +24,23 @@ public class Tag {
         }
 
         this.name = trimmedName;
+        this.assignments = new HashSet<>();
     }
 
     public String getName() {
         return name;
+    }
+
+    public Set<ContactTagAssignment> getAssignments() {
+        return new HashSet<>(assignments);
+    }
+
+    public void addAssignment(ContactTagAssignment assignment) {
+        assignments.add(assignment);
+    }
+
+    public void removeAssignment(String contactId) {
+        assignments.removeIf(assignment -> assignment.getContactId().equals(contactId));
     }
 
     private String normalizedName() {

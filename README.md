@@ -1,14 +1,14 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 11 - Create and Manage Tags
+### Use Case 12 - Apply Tags to Contacts
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to create custom tags and manage tag assignment for contacts.
+This use case allows a logged-in user to assign one or multiple tags to contacts and manage that relationship.
 
 #### Design Patterns
 
-- Flyweight Pattern for sharing tag instances
+- Observer Pattern for tag assignment updates
 
 #### WorkFlow Example
 
@@ -26,7 +26,7 @@ This use case allows a logged-in user to create custom tags and manage tag assig
 11. Bulk Operations
 12. Search Contacts
 13. Advanced Filtering
-14. Manage Tags
+14. Apply Tags To Contacts
 15. Logout
 16. Exit
 Enter choice: 14
@@ -37,12 +37,17 @@ Manage Tags
 3. Assign Tag To Contact
 4. Remove Tag From Contact
 5. Back
-Enter choice: 2
-Enter custom tag name: Neighbours
-```s
+Enter choice: 3
+
+Available Contact Ids
+MEG1 - Teena
+Enter reference id: MEG1
+Enter tag name: Friend
+```
 
 Output
 
 ```text
-Tag created: Neighbousrs
+UI updated: tags applied for MEG1
+Tag assigned successfully.
 ```

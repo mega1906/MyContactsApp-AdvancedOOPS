@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class Contact {
 
@@ -19,7 +20,7 @@ public abstract class Contact {
     private List<EmailAddress> emailAddresses;
     private String address;
     private String notes;
-    private Set<Tag> tags;
+    private Set<ContactTagAssignment> tagAssignments;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private int contactFrequency;
@@ -45,7 +46,7 @@ public abstract class Contact {
         this.emailAddresses = copyEmailAddresses(emailAddresses);
         this.address = address;
         this.notes = notes;
-        this.tags = new HashSet<>();
+        this.tagAssignments = new HashSet<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.contactFrequency = 0;
@@ -86,7 +87,13 @@ public abstract class Contact {
     }
 
     public Set<Tag> getTags() {
-        return new HashSet<>(tags);
+        return tagAssignments.stream()
+                .map(ContactTagAssignment::getTag)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<ContactTagAssignment> getTagAssignments() {
+        return new HashSet<>(tagAssignments);
     }
 
     public LocalDateTime getCreatedAt() {
@@ -138,19 +145,22 @@ public abstract class Contact {
         this.notes = notes;
     }
 
-    public void setTags(Set<Tag> tags) {
-        this.tags = new HashSet<>(tags);
+    public void setTagAssignments(Set<ContactTagAssignment> tagAssignments) {
+        this.tagAssignments = new HashSet<>(tagAssignments);
     }
 
     public void addTag(Tag tag) {
         if (tag != null) {
-            tags.add(tag);
+            ContactTagAssignment assignment = new ContactTagAssignment(contactId, tag, LocalDateTime.now());
+            tagAssignments.add(assignment);
+            tag.addAssignment(assignment);
         }
     }
 
     public void removeTag(Tag tag) {
         if (tag != null) {
-            tags.remove(tag);
+            tagAssignments.removeIf(assignment -> assignment.getTag().equals(tag));
+            tag.removeAssignment(contactId);
         }
     }
 
