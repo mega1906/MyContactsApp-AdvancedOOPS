@@ -17,6 +17,7 @@ public abstract class Contact {
     private List<EmailAddress> emailAddresses;
     private String address;
     private String notes;
+    private List<String> tags;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean deleted;
@@ -41,6 +42,7 @@ public abstract class Contact {
         this.emailAddresses = copyEmailAddresses(emailAddresses);
         this.address = address;
         this.notes = notes;
+        this.tags = new ArrayList<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
@@ -77,6 +79,10 @@ public abstract class Contact {
 
     public String getNotes() {
         return notes;
+    }
+
+    public List<String> getTags() {
+        return new ArrayList<>(tags);
     }
 
     public LocalDateTime getCreatedAt() {
@@ -122,6 +128,16 @@ public abstract class Contact {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = new ArrayList<>(tags);
+    }
+
+    public void addTag(String tag) {
+        if (tag != null && !tag.isBlank() && tags.stream().noneMatch(existing -> existing.equalsIgnoreCase(tag))) {
+            tags.add(tag.trim());
+        }
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {

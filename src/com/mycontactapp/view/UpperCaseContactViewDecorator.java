@@ -16,6 +16,7 @@ public class UpperCaseContactViewDecorator extends ContactViewDecorator {
                 baseView.getName().toUpperCase(),
                 baseView.getPhoneNumbers(),
                 baseView.getEmailAddresses(),
+                baseView.getTags(),
                 baseView.getAddress(),
                 baseView.getNotes().map(String::toUpperCase),
                 baseView.getCreatedAt(),

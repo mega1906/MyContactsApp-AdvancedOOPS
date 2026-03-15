@@ -10,19 +10,21 @@ public final class ContactView {
     private final String name;
     private final List<String> phoneNumbers;
     private final List<String> emailAddresses;
+    private final List<String> tags;
     private final Optional<String> address;
     private final Optional<String> notes;
     private final String createdAt;
     private final String updatedAt;
 
     public ContactView(String referenceId, String contactType, String name, List<String> phoneNumbers,
-                       List<String> emailAddresses, Optional<String> address, Optional<String> notes,
+                       List<String> emailAddresses, List<String> tags, Optional<String> address, Optional<String> notes,
                        String createdAt, String updatedAt) {
         this.referenceId = referenceId;
         this.contactType = contactType;
         this.name = name;
         this.phoneNumbers = List.copyOf(phoneNumbers);
         this.emailAddresses = List.copyOf(emailAddresses);
+        this.tags = List.copyOf(tags);
         this.address = address;
         this.notes = notes;
         this.createdAt = createdAt;
@@ -49,6 +51,10 @@ public final class ContactView {
         return emailAddresses;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
     public Optional<String> getAddress() {
         return address;
     }
@@ -73,6 +79,7 @@ public final class ContactView {
                         "Name         : %s%n" +
                         "Phones       : %s%n" +
                         "Emails       : %s%n" +
+                        "Tags         : %s%n" +
                         "Address      : %s%n" +
                         "Notes        : %s%n" +
                         "Created At   : %s%n" +
@@ -82,6 +89,7 @@ public final class ContactView {
                 name,
                 String.join(", ", phoneNumbers),
                 String.join(", ", emailAddresses),
+                tags.isEmpty() ? "-" : String.join(", ", tags),
                 address.orElse("-"),
                 notes.orElse("-"),
                 createdAt,

@@ -1,27 +1,35 @@
 package com.mycontactapp.controller;
 
+import com.mycontactapp.composite.ContactComponent;
 import com.mycontactapp.exception.ValidationException;
 import com.mycontactapp.model.Contact;
 import com.mycontactapp.model.EmailAddress;
 import com.mycontactapp.model.PhoneNumber;
 import com.mycontactapp.model.User;
+import com.mycontactapp.service.BulkContactService;
 import com.mycontactapp.service.ContactService;
 import com.mycontactapp.service.SessionManager;
 import com.mycontactapp.util.InputValidator;
 import com.mycontactapp.view.ContactView;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class ContactController {
 
     private final ContactService contactService;
+    private final BulkContactService bulkContactService;
 
     public ContactController() {
         this.contactService = new ContactService();
+        this.bulkContactService = new BulkContactService();
     }
 
     public void createContact(Scanner scanner) {
@@ -236,6 +244,61 @@ public class ContactController {
         }
     }
 
+    public void bulkOperations(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+        List<String> referenceList = contactService.getContactReferenceList(owner);
+
+        if (referenceList.isEmpty()) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Contact Ids");
+        referenceList.forEach(System.out::println);
+        System.out.print("Enter reference ids separated by comma or ALL: ");
+
+        try {
+            ContactComponent selectedContacts = bulkContactService.buildSelection(
+                    owner,
+                    readReferenceIds(scanner, referenceList)
+            );
+
+            switch (readBulkOperation(scanner)) {
+                case "DELETE":
+                    String deleteMode = readDeleteMode(scanner);
+                    if (!confirmDelete(scanner)) {
+                        System.out.println("Bulk delete cancelled.");
+                        return;
+                    }
+                    int deletedCount = bulkContactService.bulkDelete(owner, selectedContacts, deleteMode);
+                    System.out.println("Bulk delete completed for " + deletedCount + " contact(s).");
+                    break;
+                case "TAG":
+                    System.out.print("Enter tag: ");
+                    String tag = scanner.nextLine().trim();
+                    int taggedCount = bulkContactService.bulkTag(owner, selectedContacts, tag);
+                    System.out.println("Tag added to " + taggedCount + " contact(s).");
+                    break;
+                default:
+                    Path exportPath = bulkContactService.bulkExport(owner, selectedContacts);
+                    System.out.println("Contacts exported to: " + exportPath);
+                    break;
+            }
+        } catch (ValidationException exception) {
+            System.out.println("Bulk operation failed: " + exception.getMessage());
+        } catch (IOException exception) {
+            System.out.println("Export failed: " + exception.getMessage());
+        }
+    }
+
     private String readContactType(Scanner scanner) {
         while (true) {
             System.out.println();
@@ -363,6 +426,48 @@ public class ContactController {
 
             System.out.println("Invalid choice. Please enter 1 or 2.");
         }
+    }
+
+    private String readBulkOperation(Scanner scanner) {
+        while (true) {
+            System.out.println();
+            System.out.println("Select bulk operation:");
+            System.out.println("1. Bulk Delete");
+            System.out.println("2. Bulk Tag");
+            System.out.println("3. Bulk Export");
+            System.out.print("Enter choice: ");
+
+            String choice = scanner.nextLine().trim();
+
+            if ("1".equals(choice)) {
+                return "DELETE";
+            }
+
+            if ("2".equals(choice)) {
+                return "TAG";
+            }
+
+            if ("3".equals(choice)) {
+                return "EXPORT";
+            }
+
+            System.out.println("Invalid choice. Please enter 1, 2 or 3.");
+        }
+    }
+
+    private List<String> readReferenceIds(Scanner scanner, List<String> referenceList) {
+        String input = scanner.nextLine().trim();
+
+        if ("ALL".equalsIgnoreCase(input)) {
+            return referenceList.stream()
+                    .map(value -> value.split(" - ")[0])
+                    .collect(Collectors.toList());
+        }
+
+        return Arrays.stream(input.split(","))
+                .map(String::trim)
+                .filter(value -> !value.isBlank())
+                .collect(Collectors.toList());
     }
 
     private boolean confirmDelete(Scanner scanner) {

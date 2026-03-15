@@ -3,10 +3,10 @@ package com.mycontactapp.app;
 import com.mycontactapp.controller.AppController;
 
 /* Main class
- * Use Case 7 - Delete Contact
+ * Use Case 8 - Bulk Operations
  * Starts the console app and routes the user to the selected module.
  * @author Developer
- * @version 7.0
+ * @version 8.0
  */
 public class MyContactsApp {
 

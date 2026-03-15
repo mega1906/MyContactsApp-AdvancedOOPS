@@ -26,6 +26,7 @@ public class OrganizationContact extends Contact {
                 other.isDeleted(),
                 other.getDeletedAt()
         );
+        setTags(other.getTags());
     }
 
     @Override

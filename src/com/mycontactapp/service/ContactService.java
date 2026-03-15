@@ -88,6 +88,7 @@ public class ContactService {
                 contact.getName(),
                 phoneNumbers,
                 emailAddresses,
+                contact.getTags(),
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 contact.getCreatedAt().format(formatter),
@@ -137,6 +138,24 @@ public class ContactService {
 
     public boolean redoLastEdit(User owner) {
         return ContactHistoryManager.redo(owner.getUserId()).isPresent();
+    }
+
+    public Contact addTagToContact(User owner, String referenceId, String tag) throws ValidationException {
+        if (tag == null || tag.isBlank()) {
+            throw new ValidationException("Tag cannot be empty.");
+        }
+
+        Optional<Contact> contactOptional = findContact(owner, referenceId);
+
+        if (contactOptional.isEmpty()) {
+            throw new ValidationException("Contact not found.");
+        }
+
+        Contact modifiedContact = copyContact(contactOptional.get());
+        modifiedContact.addTag(tag);
+        modifiedContact.setUpdatedAt(LocalDateTime.now());
+        ContactStore.replaceContact(modifiedContact);
+        return modifiedContact;
     }
 
     public String deleteContact(User owner, String referenceId, String deleteMode) throws ValidationException {
