@@ -19,10 +19,20 @@ public abstract class Contact {
     private String notes;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean deleted;
+    private LocalDateTime deletedAt;
 
     protected Contact(String contactId, String referenceId, String ownerUserId, String name,
                       List<PhoneNumber> phoneNumbers, List<EmailAddress> emailAddresses,
                       String address, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(contactId, referenceId, ownerUserId, name, phoneNumbers, emailAddresses,
+                address, notes, createdAt, updatedAt, false, null);
+    }
+
+    protected Contact(String contactId, String referenceId, String ownerUserId, String name,
+                      List<PhoneNumber> phoneNumbers, List<EmailAddress> emailAddresses,
+                      String address, String notes, LocalDateTime createdAt, LocalDateTime updatedAt,
+                      boolean deleted, LocalDateTime deletedAt) {
         this.contactId = contactId;
         this.referenceId = referenceId;
         this.ownerUserId = ownerUserId;
@@ -33,6 +43,8 @@ public abstract class Contact {
         this.notes = notes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.deleted = deleted;
+        this.deletedAt = deletedAt;
     }
 
     public String getContactId() {
@@ -75,6 +87,14 @@ public abstract class Contact {
         return updatedAt;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
     public void setName(String name) throws ValidationException {
         InputValidator.validateName(name);
         this.name = name;
@@ -106,6 +126,14 @@ public abstract class Contact {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     private List<PhoneNumber> copyPhoneNumbers(List<PhoneNumber> source) {

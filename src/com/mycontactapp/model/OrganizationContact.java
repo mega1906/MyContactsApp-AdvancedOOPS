@@ -12,7 +12,7 @@ public class OrganizationContact extends Contact {
     }
 
     public OrganizationContact(OrganizationContact other) {
-        this(
+        super(
                 other.getContactId(),
                 other.getReferenceId(),
                 other.getOwnerUserId(),
@@ -22,7 +22,9 @@ public class OrganizationContact extends Contact {
                 other.getAddress(),
                 other.getNotes(),
                 other.getCreatedAt(),
-                other.getUpdatedAt()
+                other.getUpdatedAt(),
+                other.isDeleted(),
+                other.getDeletedAt()
         );
     }
 

@@ -12,7 +12,7 @@ public class PersonContact extends Contact {
     }
 
     public PersonContact(PersonContact other) {
-        this(
+        super(
                 other.getContactId(),
                 other.getReferenceId(),
                 other.getOwnerUserId(),
@@ -22,7 +22,9 @@ public class PersonContact extends Contact {
                 other.getAddress(),
                 other.getNotes(),
                 other.getCreatedAt(),
-                other.getUpdatedAt()
+                other.getUpdatedAt(),
+                other.isDeleted(),
+                other.getDeletedAt()
         );
     }
 

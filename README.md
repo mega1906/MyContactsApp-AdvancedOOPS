@@ -1,15 +1,14 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 6 - Edit Contact
+### Use Case 7 - Delete Contact
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to modify an existing contact and use undo or redo on the latest edits.
+This use case allows a logged-in user to delete a contact with confirmation using either soft delete or hard delete.
 
 #### Design Patterns
 
-- Command Pattern for undo and redo operations
-- Memento Pattern for preserving contact state
+- Observer Pattern for deletion notifications
 
 #### WorkFlow Example
 
@@ -23,34 +22,25 @@ This use case allows a logged-in user to modify an existing contact and use undo
 7. Edit Contact
 8. Undo Last Contact Edit
 9. Redo Last Contact Edit
-10. Logout
-11. Exit
-Enter choice: 7
+10. Delete Contact
+11. Logout
+12. Exit
+Enter choice: 10
 
 Available Contact Ids
 MEG1 - Teena
 
 Enter reference id: MEG1
 
-What do you want to edit?
-1. Name
-2. Phone Numbers
-3. Email Addresses
-4. Address
-5. Notes
-6. Back
-Enter choice: 5
-Enter notes (optional): School Friend
+Select delete type:
+1. Soft Delete
+2. Hard Delete
+Enter choice: 1
+Are you sure you want to delete this contact? (yes/no): yes
 ```
 
 Output
 
 ```text
-Contact notes updated successfully.
-
-Enter choice: 8
-Last contact edit undone successfully.
-
-Enter choice: 9
-Last contact edit redone successfully.
+Contact moved to deleted state.
 ```

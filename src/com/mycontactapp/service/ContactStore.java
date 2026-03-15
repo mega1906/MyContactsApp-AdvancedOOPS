@@ -32,7 +32,8 @@ public class ContactStore {
     public static Optional<Contact> findContactByReferenceId(String ownerUserId, String referenceId) {
         for (Contact contact : CONTACTS) {
             if (contact.getOwnerUserId().equals(ownerUserId)
-                    && contact.getReferenceId().equalsIgnoreCase(referenceId)) {
+                    && contact.getReferenceId().equalsIgnoreCase(referenceId)
+                    && !contact.isDeleted()) {
                 return Optional.of(contact);
             }
         }
@@ -44,7 +45,7 @@ public class ContactStore {
         List<Contact> ownerContacts = new ArrayList<>();
 
         for (Contact contact : CONTACTS) {
-            if (contact.getOwnerUserId().equals(ownerUserId)) {
+            if (contact.getOwnerUserId().equals(ownerUserId) && !contact.isDeleted()) {
                 ownerContacts.add(contact);
             }
         }
@@ -61,5 +62,9 @@ public class ContactStore {
                 return;
             }
         }
+    }
+
+    public static void deleteContact(String contactId) {
+        CONTACTS.removeIf(contact -> contact.getContactId().equals(contactId));
     }
 }

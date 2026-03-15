@@ -196,6 +196,46 @@ public class ContactController {
         }
     }
 
+    public void deleteContact(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+        List<String> referenceList = contactService.getContactReferenceList(owner);
+
+        if (referenceList.isEmpty()) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Contact Ids");
+
+        for (String referenceItem : referenceList) {
+            System.out.println(referenceItem);
+        }
+
+        System.out.print("Enter reference id: ");
+        String referenceId = scanner.nextLine().trim();
+        String deleteMode = readDeleteMode(scanner);
+
+        if (!confirmDelete(scanner)) {
+            System.out.println("Delete operation cancelled.");
+            return;
+        }
+
+        try {
+            String message = contactService.deleteContact(owner, referenceId, deleteMode);
+            System.out.println(message);
+        } catch (ValidationException exception) {
+            System.out.println("Contact delete failed: " + exception.getMessage());
+        }
+    }
+
     private String readContactType(Scanner scanner) {
         while (true) {
             System.out.println();
@@ -301,6 +341,45 @@ public class ContactController {
     private String readOptionalValue(Scanner scanner, String message) {
         System.out.print(message);
         return scanner.nextLine().trim();
+    }
+
+    private String readDeleteMode(Scanner scanner) {
+        while (true) {
+            System.out.println();
+            System.out.println("Select delete type:");
+            System.out.println("1. Soft Delete");
+            System.out.println("2. Hard Delete");
+            System.out.print("Enter choice: ");
+
+            String choice = scanner.nextLine().trim();
+
+            if ("1".equals(choice)) {
+                return "SOFT";
+            }
+
+            if ("2".equals(choice)) {
+                return "HARD";
+            }
+
+            System.out.println("Invalid choice. Please enter 1 or 2.");
+        }
+    }
+
+    private boolean confirmDelete(Scanner scanner) {
+        while (true) {
+            System.out.print("Are you sure you want to delete this contact? (yes/no): ");
+            String choice = scanner.nextLine().trim();
+
+            if (choice.equalsIgnoreCase("yes") || choice.equalsIgnoreCase("y")) {
+                return true;
+            }
+
+            if (choice.equalsIgnoreCase("no") || choice.equalsIgnoreCase("n")) {
+                return false;
+            }
+
+            System.out.println("Invalid choice. Please enter yes or no.");
+        }
     }
 
     private void printEditContactMenu() {

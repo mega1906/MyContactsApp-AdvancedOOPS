@@ -11,6 +11,9 @@ import com.mycontactapp.model.OrganizationContact;
 import com.mycontactapp.model.PersonContact;
 import com.mycontactapp.model.PhoneNumber;
 import com.mycontactapp.model.User;
+import com.mycontactapp.observer.ContactCascadeObserver;
+import com.mycontactapp.observer.ContactDeletionObserver;
+import com.mycontactapp.observer.ContactHistoryObserver;
 import com.mycontactapp.util.InputValidator;
 import com.mycontactapp.view.ContactView;
 
@@ -24,9 +27,14 @@ import java.util.UUID;
 public class ContactService {
 
     private final ContactFactory contactFactory;
+    private final List<ContactDeletionObserver> contactDeletionObservers;
 
     public ContactService() {
         this.contactFactory = new ContactFactory();
+        this.contactDeletionObservers = List.of(
+                new ContactHistoryObserver(),
+                new ContactCascadeObserver()
+        );
     }
 
     public Contact createContact(User owner, String contactType, String name, List<PhoneNumber> phoneNumbers,
@@ -131,6 +139,33 @@ public class ContactService {
         return ContactHistoryManager.redo(owner.getUserId()).isPresent();
     }
 
+    public String deleteContact(User owner, String referenceId, String deleteMode) throws ValidationException {
+        Optional<Contact> contactOptional = findContact(owner, referenceId);
+
+        if (contactOptional.isEmpty()) {
+            throw new ValidationException("Contact not found.");
+        }
+
+        Contact contact = copyContact(contactOptional.get());
+
+        if ("SOFT".equalsIgnoreCase(deleteMode)) {
+            contact.setDeleted(true);
+            contact.setDeletedAt(LocalDateTime.now());
+            contact.setUpdatedAt(LocalDateTime.now());
+            ContactStore.replaceContact(contact);
+            notifyDeletionObservers(contact, deleteMode);
+            return "Contact moved to deleted state.";
+        }
+
+        if ("HARD".equalsIgnoreCase(deleteMode)) {
+            ContactStore.deleteContact(contact.getContactId());
+            notifyDeletionObservers(contact, deleteMode);
+            return "Contact removed permanently.";
+        }
+
+        throw new ValidationException("Invalid delete option selected.");
+    }
+
     private void validateContactData(String name, List<PhoneNumber> phoneNumbers,
                                      List<EmailAddress> emailAddresses) throws ValidationException {
         InputValidator.validateName(name);
@@ -194,5 +229,11 @@ public class ContactService {
         }
 
         return new OrganizationContact((OrganizationContact) contact);
+    }
+
+    private void notifyDeletionObservers(Contact contact, String deleteMode) {
+        for (ContactDeletionObserver observer : contactDeletionObservers) {
+            observer.onContactDeleted(contact, deleteMode);
+        }
     }
 }

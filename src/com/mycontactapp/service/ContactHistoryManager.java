@@ -5,6 +5,7 @@ import com.mycontactapp.command.ContactEditCommand;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -47,11 +48,28 @@ public class ContactHistoryManager {
         return Optional.of(command);
     }
 
+    public static void clearHistoryForContact(String ownerUserId, String contactId) {
+        removeCommands(getUndoStack(ownerUserId), contactId);
+        removeCommands(getRedoStack(ownerUserId), contactId);
+    }
+
     private static Deque<ContactEditCommand> getUndoStack(String ownerUserId) {
         return UNDO_STACKS.computeIfAbsent(ownerUserId, key -> new ArrayDeque<>());
     }
 
     private static Deque<ContactEditCommand> getRedoStack(String ownerUserId) {
         return REDO_STACKS.computeIfAbsent(ownerUserId, key -> new ArrayDeque<>());
+    }
+
+    private static void removeCommands(Deque<ContactEditCommand> commands, String contactId) {
+        Iterator<ContactEditCommand> iterator = commands.iterator();
+
+        while (iterator.hasNext()) {
+            ContactEditCommand command = iterator.next();
+
+            if (command.getAfterState().getSnapshot().getContactId().equals(contactId)) {
+                iterator.remove();
+            }
+        }
     }
 }
