@@ -9,11 +9,13 @@ public class AppController {
     private final RegistrationController registrationController;
     private final AuthenticationController authenticationController;
     private final ProfileController profileController;
+    private final ContactController contactController;
 
     public AppController() {
         this.registrationController = new RegistrationController();
         this.authenticationController = new AuthenticationController();
         this.profileController = new ProfileController();
+        this.contactController = new ContactController();
     }
 
     public void startApp() {
@@ -66,15 +68,18 @@ public class AppController {
                 profileController.managePreferences(scanner);
                 return true;
             case "5":
+                contactController.createContact(scanner);
+                return true;
+            case "6":
                 SessionManager.getInstance().endSession();
                 System.out.println("Logged out successfully.");
                 return true;
-            case "6":
+            case "7":
                 SessionManager.getInstance().endSession();
                 System.out.println("MyContacts App closed.");
                 return false;
             default:
-                System.out.println("Invalid choice. Please enter 1 to 6.");
+                System.out.println("Invalid choice. Please enter 1 to 7.");
                 return true;
         }
     }
@@ -96,8 +101,9 @@ public class AppController {
         System.out.println("2. Update Profile");
         System.out.println("3. Change Password");
         System.out.println("4. Manage Preferences");
-        System.out.println("5. Logout");
-        System.out.println("6. Exit");
+        System.out.println("5. Create Contact");
+        System.out.println("6. Logout");
+        System.out.println("7. Exit");
         System.out.print("Enter choice: ");
     }
 }

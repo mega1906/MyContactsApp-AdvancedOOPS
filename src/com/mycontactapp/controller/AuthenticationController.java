@@ -27,11 +27,6 @@ public class AuthenticationController {
 
         boolean continueLogin = true;
 
-        System.out.println();
-        System.out.println("====================================");
-        System.out.println(" User Profile Management - UC3");
-        System.out.println("====================================");
-
         while (continueLogin) {
             try {
                 String authType = readAuthType(scanner);
