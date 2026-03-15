@@ -20,7 +20,8 @@ public class UpperCaseContactViewDecorator extends ContactViewDecorator {
                 baseView.getAddress(),
                 baseView.getNotes().map(String::toUpperCase),
                 baseView.getCreatedAt(),
-                baseView.getUpdatedAt()
+                baseView.getUpdatedAt(),
+                baseView.getContactFrequency()
         );
     }
 }

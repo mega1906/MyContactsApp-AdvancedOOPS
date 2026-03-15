@@ -15,10 +15,11 @@ public final class ContactView {
     private final Optional<String> notes;
     private final String createdAt;
     private final String updatedAt;
+    private final int contactFrequency;
 
     public ContactView(String referenceId, String contactType, String name, List<String> phoneNumbers,
                        List<String> emailAddresses, List<String> tags, Optional<String> address, Optional<String> notes,
-                       String createdAt, String updatedAt) {
+                       String createdAt, String updatedAt, int contactFrequency) {
         this.referenceId = referenceId;
         this.contactType = contactType;
         this.name = name;
@@ -29,6 +30,7 @@ public final class ContactView {
         this.notes = notes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.contactFrequency = contactFrequency;
     }
 
     public String getReferenceId() {
@@ -71,6 +73,10 @@ public final class ContactView {
         return updatedAt;
     }
 
+    public int getContactFrequency() {
+        return contactFrequency;
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -83,7 +89,8 @@ public final class ContactView {
                         "Address      : %s%n" +
                         "Notes        : %s%n" +
                         "Created At   : %s%n" +
-                        "Updated At   : %s",
+                        "Updated At   : %s%n" +
+                        "Frequency    : %s",
                 referenceId,
                 contactType,
                 name,
@@ -93,7 +100,8 @@ public final class ContactView {
                 address.orElse("-"),
                 notes.orElse("-"),
                 createdAt,
-                updatedAt
+                updatedAt,
+                contactFrequency
         );
     }
 }

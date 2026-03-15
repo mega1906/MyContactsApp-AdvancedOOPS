@@ -68,7 +68,10 @@ public class ContactService {
             return Optional.empty();
         }
 
-        Contact contact = contactOptional.get();
+        Contact contact = copyContact(contactOptional.get());
+        contact.incrementContactFrequency();
+        contact.setUpdatedAt(LocalDateTime.now());
+        ContactStore.replaceContact(contact);
         List<String> phoneNumbers = new ArrayList<>();
         List<String> emailAddresses = new ArrayList<>();
 
@@ -92,7 +95,8 @@ public class ContactService {
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 contact.getCreatedAt().format(formatter),
-                contact.getUpdatedAt().format(formatter)
+                contact.getUpdatedAt().format(formatter),
+                contact.getContactFrequency()
         ));
     }
 

@@ -8,6 +8,7 @@ import com.mycontactapp.model.PhoneNumber;
 import com.mycontactapp.model.User;
 import com.mycontactapp.service.BulkContactService;
 import com.mycontactapp.service.ContactService;
+import com.mycontactapp.service.AdvancedFilterService;
 import com.mycontactapp.service.SearchService;
 import com.mycontactapp.service.SessionManager;
 import com.mycontactapp.util.InputValidator;
@@ -15,6 +16,7 @@ import com.mycontactapp.view.ContactView;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +30,13 @@ public class ContactController {
     private final ContactService contactService;
     private final BulkContactService bulkContactService;
     private final SearchService searchService;
+    private final AdvancedFilterService advancedFilterService;
 
     public ContactController() {
         this.contactService = new ContactService();
         this.bulkContactService = new BulkContactService();
         this.searchService = new SearchService();
+        this.advancedFilterService = new AdvancedFilterService();
     }
 
     public void createContact(Scanner scanner) {
@@ -338,6 +342,45 @@ public class ContactController {
         });
     }
 
+    public void advancedFiltering(Scanner scanner) {
+        Optional<User> userOptional = SessionManager.getInstance().getLoggedInUser();
+
+        if (userOptional.isEmpty()) {
+            System.out.println("No user is currently logged in.");
+            return;
+        }
+
+        User owner = userOptional.get();
+
+        System.out.println();
+        System.out.println("Advanced Filtering");
+        System.out.print("Enter tag to filter (leave blank to skip): ");
+        String tag = scanner.nextLine().trim();
+        LocalDate dateAdded = readOptionalDate(scanner);
+        Integer minimumFrequency = readOptionalFrequency(scanner);
+        String sortOption = readSortOption(scanner);
+
+        List<ContactView> results = advancedFilterService.filterContacts(
+                owner,
+                tag,
+                dateAdded,
+                minimumFrequency,
+                sortOption
+        );
+
+        if (results.isEmpty()) {
+            System.out.println("No contacts matched the selected filters.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Filtered Contacts");
+        results.forEach(contactView -> {
+            System.out.println(contactView);
+            System.out.println();
+        });
+    }
+
     private String readContactType(Scanner scanner) {
         while (true) {
             System.out.println();
@@ -464,6 +507,67 @@ public class ContactController {
             }
 
             System.out.println("Invalid choice. Please enter 1 or 2.");
+        }
+    }
+
+    private LocalDate readOptionalDate(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter date added in yyyy-MM-dd (leave blank to skip): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isBlank()) {
+                return null;
+            }
+
+            try {
+                return LocalDate.parse(input);
+            } catch (Exception exception) {
+                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+            }
+        }
+    }
+
+    private Integer readOptionalFrequency(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter minimum frequency count (leave blank to skip): ");
+            String input = scanner.nextLine().trim();
+
+            if (input.isBlank()) {
+                return null;
+            }
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException exception) {
+                System.out.println("Invalid number. Please enter a whole number.");
+            }
+        }
+    }
+
+    private String readSortOption(Scanner scanner) {
+        while (true) {
+            System.out.println();
+            System.out.println("Select sort option:");
+            System.out.println("1. Name");
+            System.out.println("2. Date Added");
+            System.out.println("3. Frequently Contacted");
+            System.out.print("Enter choice: ");
+
+            String choice = scanner.nextLine().trim();
+
+            if ("1".equals(choice)) {
+                return "NAME";
+            }
+
+            if ("2".equals(choice)) {
+                return "DATE";
+            }
+
+            if ("3".equals(choice)) {
+                return "FREQUENCY";
+            }
+
+            System.out.println("Invalid choice. Please enter 1, 2 or 3.");
         }
     }
 

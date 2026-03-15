@@ -28,7 +28,8 @@ public class MaskedEmailContactViewDecorator extends ContactViewDecorator {
                 baseView.getAddress(),
                 baseView.getNotes(),
                 baseView.getCreatedAt(),
-                baseView.getUpdatedAt()
+                baseView.getUpdatedAt(),
+                baseView.getContactFrequency()
         );
     }
 

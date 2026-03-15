@@ -1,15 +1,15 @@
 # MyContacts App - Advanced OOPS
 
-### Use Case 9 - Search Contacts
+### Use Case 10 - Advanced Filtering
 
 This project is a Java console application built step by step using object-oriented programming concepts, design patterns and core Java features.
 
-This use case allows a logged-in user to search contacts by name, phone, email and tags.
+This use case allows a logged-in user to apply multiple filters like tag, date added and frequently contacted, then sort the result.
 
 #### Design Patterns
 
-- Specification Pattern for building search criteria
-- Chain of Responsibility for the search filter pipeline
+- Composite Pattern for combining filters
+- Strategy Pattern for different sorting algorithms
 
 #### WorkFlow Example
 
@@ -26,21 +26,27 @@ This use case allows a logged-in user to search contacts by name, phone, email a
 10. Delete Contact
 11. Bulk Operations
 12. Search Contacts
-13. Logout
-14. Exit
-Enter choice: 12
+13. Advanced Filtering
+14. Logout
+15. Exit
+Enter choice: 13
 
-Search Contacts
-Enter name to search (leave blank to skip): teena
-Enter phone to search (leave blank to skip):
-Enter email to search (leave blank to skip):
-Enter tag to search (leave blank to skip): teama
+Advanced Filtering
+Enter tag to filter (leave blank to skip): TeamA
+Enter date added in yyyy-MM-dd (leave blank to skip):
+Enter minimum frequency count (leave blank to skip): 1
+
+Select sort option:
+1. Name
+2. Date Added
+3. Frequently Contacted
+Enter choice: 3
 ```
 
 Output
 
 ```text
-Search Results
+Filtered Contacts
 Reference Id : MEG1
 Contact Type : Person Contact
 Name         : Teena
@@ -51,4 +57,5 @@ Address      : Chennai
 Notes        : Friend
 Created At   : 2025-01-01 10:00:00
 Updated At   : 2025-01-01 10:00:00
+Frequency    : 2
 ```

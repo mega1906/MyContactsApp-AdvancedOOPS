@@ -77,7 +77,8 @@ public class SearchService {
                 java.util.Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 java.util.Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 contact.getCreatedAt().format(formatter),
-                contact.getUpdatedAt().format(formatter)
+                contact.getUpdatedAt().format(formatter),
+                contact.getContactFrequency()
         );
     }
 }

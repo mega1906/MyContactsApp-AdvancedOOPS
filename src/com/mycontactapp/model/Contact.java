@@ -20,6 +20,7 @@ public abstract class Contact {
     private List<String> tags;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int contactFrequency;
     private boolean deleted;
     private LocalDateTime deletedAt;
 
@@ -45,6 +46,7 @@ public abstract class Contact {
         this.tags = new ArrayList<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.contactFrequency = 0;
         this.deleted = deleted;
         this.deletedAt = deletedAt;
     }
@@ -95,6 +97,10 @@ public abstract class Contact {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public int getContactFrequency() {
+        return contactFrequency;
     }
 
     public LocalDateTime getDeletedAt() {
@@ -150,6 +156,14 @@ public abstract class Contact {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public void setContactFrequency(int contactFrequency) {
+        this.contactFrequency = contactFrequency;
+    }
+
+    public void incrementContactFrequency() {
+        this.contactFrequency++;
     }
 
     private List<PhoneNumber> copyPhoneNumbers(List<PhoneNumber> source) {
